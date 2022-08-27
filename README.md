@@ -1,6 +1,6 @@
 # MS-G3D
 
-PyTorch implementation of "Disentangling and Unifying Graph Convolutions for Skeleton-Based Action Recognition", CVPR 2020 Oral.
+This repo has been forked from the official implementation of "Disentangling and Unifying Graph Convolutions for Skeleton-Based Action Recognition", found here: https://github.com/kenziyuliu/MS-G3D. This repo is for use as a submodule for the Lifelong Action Learning project (https://github.com/hwalli92/LAL-4-SARs)
 
 [[PDF](https://arxiv.org/pdf/2003.14111.pdf)][[Demo](https://youtu.be/5TcHIIece38)][[Abstract/Supp](https://openaccess.thecvf.com/content_CVPR_2020/html/Liu_Disentangling_and_Unifying_Graph_Convolutions_for_Skeleton-Based_Action_Recognition_CVPR_2020_paper.html)]
 

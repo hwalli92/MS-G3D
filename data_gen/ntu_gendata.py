@@ -96,19 +96,27 @@ def read_xyz(file, max_body=4, num_joint=25):
     return data
 
 
-def gendata(data_path, out_path, ignored_sample_path=None, benchmark='xview', part='eval'):
+def gendata(data_path, action_list,out_path, ignored_sample_path=None, benchmark='xview', part='eval'):
     if ignored_sample_path != None:
         with open(ignored_sample_path, 'r') as f:
             ignored_samples = [line.strip() + '.skeleton' for line in f.readlines()]
     else:
         ignored_samples = []
+
+    if action_list != None:
+        actions = np.loadtxt(arg.actions_list, dtype=np.int)
+    else:
+        actions = np.arange(1,61)
+
     sample_name = []
     sample_label = []
     for filename in sorted(os.listdir(data_path)):
         if filename in ignored_samples:
             continue
+        elif int(filename[filename.find('A') + 1:filename.find('A') + 4]) not in actions:
+            continue
 
-        action_class = int(filename[filename.find('A') + 1:filename.find('A') + 4])
+        action_class = np.where(actions == int(filename[filename.find('A') + 1:filename.find('A') + 4]))[0][0]
         subject_id = int(filename[filename.find('P') + 1:filename.find('P') + 4])
         camera_id = int(filename[filename.find('C') + 1:filename.find('C') + 4])
 
@@ -128,7 +136,7 @@ def gendata(data_path, out_path, ignored_sample_path=None, benchmark='xview', pa
 
         if issample:
             sample_name.append(filename)
-            sample_label.append(action_class - 1)
+            sample_label.append(action_class)
 
     with open('{}/{}_label.pkl'.format(out_path, part), 'wb') as f:
         pickle.dump((sample_name, list(sample_label)), f)
@@ -147,6 +155,7 @@ def gendata(data_path, out_path, ignored_sample_path=None, benchmark='xview', pa
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='NTU-RGB-D Data Converter.')
     parser.add_argument('--data_path', default='../data/nturgbd_raw/nturgb+d_skeletons/')
+    parser.add_argument('--actions_list', default=None)
     parser.add_argument('--ignored_sample_path',
                         default='../data/nturgbd_raw/NTU_RGBD_samples_with_missing_skeletons.txt')
     parser.add_argument('--out_folder', default='../data/ntu/')
@@ -163,6 +172,7 @@ if __name__ == '__main__':
             print(b, p)
             gendata(
                 arg.data_path,
+                arg.actions_list,
                 out_path,
                 arg.ignored_sample_path,
                 benchmark=b,
